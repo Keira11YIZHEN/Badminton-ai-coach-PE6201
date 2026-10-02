@@ -33,7 +33,7 @@ GPT-4o-mini grounded advisor via OpenRouter
 JSON advice + evidence note IDs
 ```
 
-The same pipeline can be invoked through `demo.py` (CLI) or `api.py` (FastAPI HTTP wrapper). These are interface/service wrappers only; the measured AI logic lives in `app/`.
+The same pipeline can be invoked through `demo.py` (CLI) or `backend_api.py` (FastAPI HTTP wrapper). These are interface/service wrappers only; the measured AI logic lives in `APP/`.
 
 ## Own vs rent
 
