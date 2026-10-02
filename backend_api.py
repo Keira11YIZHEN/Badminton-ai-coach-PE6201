@@ -5,7 +5,7 @@ classifier, retrieval, grounding, or evaluation logic used in the project.
 
 Run locally:
     export OPENROUTER_API_KEY='...'
-    uvicorn api:app --reload
+    uvicorn backend_api:app --reload
 
 Then POST JSON to /analyse:
     {"question": "My net shot keeps hitting the tape."}
@@ -16,7 +16,7 @@ import os
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
 
-from app.pipeline import BadmintonCoach
+from APP.pipeline import BadmintonCoach
 
 
 app = FastAPI(
