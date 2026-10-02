@@ -1,0 +1,76 @@
+id,question,label
+Q001,My forearms are always really sore after playing badminton.,technique
+Q002,"When hitting the ball, it will hit the rim.",technique
+Q003,Why can't I suppress the smash,technique
+Q004,Why can't I hit my forehand high clear,technique
+Q005,The ball always goes out of bounds when hit to the right rear.,technique
+Q006,"Besides lob shots, how else can you hit a shot at the net?",technique
+Q007,The drop shot either went too high or hit the net.,technique
+Q008,How to correct a tight grip and stiff arm when playing,technique
+Q009,How to practice switching to a backhand grip after hitting a forehand?,technique
+Q010,Backhand hitting technique practice,technique
+Q011,my forehand clear cannot travel far even with big swings,technique
+Q012,My backhand serve often goes into the net.,technique
+Q013,"My net play is terrible, making me easy for my opponent to attack.",technique
+Q014,"My defensive lob is too short, making it easy for the opponent to spike it.",technique
+Q015,"I often push the ball too far at the net, causing it to go out of bounds.",technique
+Q016,What can I do if my footwork can never catch up with the shuttle as a beginner?,footwork
+Q017,I keep failing to do the split‑step in badminton. Are there any drills I can practice?,footwork
+Q018,Why do I often lose my balance after hitting the shuttle and have poor weight transfer?,footwork
+Q019,I tend to overshoot and cannot stop when lunging to the net. How can I fix this?,footwork
+Q020,My backcourt footwork is too slow and I can barely reach the shuttle. How should I train?,footwork
+Q021,I drag my feet and cannot take wide steps when moving sideways. What is the cause?,footwork
+Q022,I always forget to return to the center base after one shot. How do I build this habit?,footwork
+Q023,"What is the difference between a hop step and a split‑step, and when should I use each?",footwork
+Q024,My feet drag on the court and I take too many tiny shuffling steps. How to correct it?,footwork
+Q025,My movement is always a split second late when defending drop shots. What tips can help?,footwork
+Q026,When should I use side steps versus cross‑steps? I often pick the wrong one.,footwork
+Q027,I stay too upright and run on my toes. How do I fix my body posture for footwork?,footwork
+Q028,I struggle to get back to the net quickly from the rear court. What footwork pattern should I use?,footwork
+Q029,My ready stance is stiff and I do not know how to adjust my position flexibly.,footwork
+Q030,It is hard for me to speed up again right after an emergency stop. What footwork mistake am I making?,footwork
+Q031,How should beginners choose a suitable badminton racket and what key parameters should I check?,equipment
+Q032,What string tension is good for new players? What problems will high tension cause?,equipment
+Q033,What is the difference between badminton shoes and regular sneakers? Can I play in running shoes?,equipment
+Q034,How often should I replace my grip? What can I do when my grip gets slippery?,equipment
+Q035,The racket handle feels too thick or too thin. How can I adjust it?,equipment
+Q036,How can I tell if a badminton shuttlecock is genuine? Is there a big difference between different‑priced shuttles?,equipment
+Q037,Do beginners need to buy an expensive professional racket right away?,equipment
+Q038,When should I wear wrist or knee supports? Will protective gear limit my movements?,equipment
+Q039,Do I have to cut out the whole string once it breaks? Can I repair just part of it?,equipment
+Q040,How do I tell apart offensive and defensive rackets. Which one suits beginners better?,equipment
+Q041,Is a grip the same as an overgrip? Should I pick thin or thick grips?,equipment
+Q042,My feet keep slipping on the court. Is it caused by my shoes or the court surface?,equipment
+Q043,Heavy rackets are hard to swing while light ones lack power. How do I pick the right racket weight?,equipment
+Q044,Do I have to use a dedicated badminton bag or can I carry rackets in an ordinary backpack?,equipment
+Q045,Shuttlecocks break feathers easily in cold weather. Are there any more durable shuttlecocks?,equipment
+Q046,How can I fix my wrist flick on the forehand clear?,technique
+Q047,What is the correct arm movement for a powerful smash?,technique
+Q048,Why does my backhand drop shot always land too high?,technique
+Q049,How should I rotate my shoulders when hitting overhead shots?,technique
+Q050,What mistakes do beginners usually make with grip pressure?,technique
+Q051,How do I perform a reliable net tap at the front court?,technique
+Q052,How can I make my cross‑court drive more accurate?,technique
+Q053,Why is my serve always going out of the back boundary?,technique
+Q054,What is the proper hitting point for a forehand lift?,technique
+Q055,How to improve the consistency of my backhand clear?,technique
+Q056,What steps should I use to quickly reach wide forehand corners?,footwork
+Q057,How do I recover to the centre after moving to the back court?,footwork
+Q058,Why do I often lose balance when doing side shuffles?,footwork
+Q059,Which foot moves first when I chase a low net ball?,footwork
+Q060,How can I shorten my reaction time for diagonal movement?,footwork
+Q061,What is the correct split‑step timing before each shot?,footwork
+Q062,How to adjust my steps when moving backwards for overhead shots?,footwork
+Q063,Why do my feet get tangled during fast lateral movement?,footwork
+Q064,What drills help beginners build faster court mobility?,footwork
+Q065,How should I position my weight before moving to the front?,footwork
+Q066,What weight racket is most suitable for new intermediate players?,equipment
+Q067,How tight should my badminton strings be strung for casual training?,equipment
+Q068,Are thick‑soled shoes better for quick side‑to‑side movement?,equipment
+Q069,What differences between synthetic and natural feather shuttlecocks?,equipment
+Q070,Do overgrips help to reduce hand slippage during long matches?,equipment
+Q071,Which racket frame material offers more power for beginners?,equipment
+Q072,How often should I replace my worn badminton shoe insoles?,equipment
+Q073,Is a heavier grip helpful when practising powerful smashes?,equipment
+Q074,What protective gear can prevent ankle injuries on slippery courts?,equipment
+Q075,How do I choose suitable badminton socks for long training sessions?,equipment
