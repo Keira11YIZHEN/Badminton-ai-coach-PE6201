@@ -1,10 +1,11 @@
 """Local badminton question classifier.
+Uses TF-IDF and Logistic Regression to route beginner badminton
+questions into three categories: technique, footwork, or equipment.
 
-Uses TF-IDF + logistic regression to route natural-language beginner questions
-into one of three bounded categories: technique, footwork, or equipment.
-The split and model settings intentionally match the original A1 experiment so
-reported numbers remain reproducible.
+The train/test split and model settings are fixed to support
+reproducible evaluation across the final project.
 """
+
 from pathlib import Path
 import csv
 from sklearn.feature_extraction.text import TfidfVectorizer
