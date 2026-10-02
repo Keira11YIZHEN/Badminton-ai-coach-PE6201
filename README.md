@@ -2,8 +2,6 @@
 
 A **backend-only AI prototype** for beginner badminton training. A natural-language problem is routed by a local **TF-IDF + logistic-regression classifier**, grounded against a **20-note badminton knowledge base**, and passed to **GPT-4o-mini via OpenRouter** only for the final advice-generation step.
 
-The repository is intentionally modest: the core contribution is the **measured hybrid AI workflow and its evaluation**, not a front-end interface.
-
 ## What the system does
 
 ```text
