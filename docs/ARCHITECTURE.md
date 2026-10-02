@@ -34,5 +34,6 @@
 ## Interfaces
 
 - `demo.py` — command-line demonstration.
-- `api.py` — optional FastAPI HTTP service (`GET /health`, `POST /analyse`).
-- `app/` — measured core AI workflow used by both interfaces.
+- `backend_api.py` — optional FastAPI HTTP service (`GET /health`, `POST /analyse`).
+- `APP/` — measured core AI workflow used by both interfaces.
+- `DATA/` — labelled classification questions and the 20-note grounding knowledge base.
