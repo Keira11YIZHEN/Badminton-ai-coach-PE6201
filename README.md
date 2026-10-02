@@ -1,4 +1,4 @@
-# Badminton AI Coach — PE6201 End-of-Course Project
+# Badminton AI Coach — PE6201 Project
 
 A **backend-only AI prototype** for beginner badminton training. A natural-language problem is routed by a local **TF-IDF + logistic-regression classifier**, grounded against a **20-note badminton knowledge base**, and passed to **GPT-4o-mini via OpenRouter** only for the final advice-generation step.
 
