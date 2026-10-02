@@ -1,0 +1,35 @@
+{
+  "n_cases": 10,
+  "category_correct_0_1": {
+    "marked": 10,
+    "passes": 7,
+    "rate": 0.7
+  },
+  "evidence_hit_0_1": {
+    "marked": 10,
+    "passes": 7,
+    "rate": 0.7
+  },
+  "abstained_0_1": {
+    "marked": 10,
+    "passes": 4,
+    "rate": 0.4
+  },
+  "prompt_tokens": 2338,
+  "completion_tokens": 570,
+  "specific_0_1": {
+    "marked": 10,
+    "passes": 6,
+    "pass_rate": 0.6
+  },
+  "supported_0_1": {
+    "marked": 10,
+    "passes": 6,
+    "pass_rate": 0.6
+  },
+  "no_invention_0_1": {
+    "marked": 10,
+    "passes": 10,
+    "pass_rate": 1.0
+  }
+}
