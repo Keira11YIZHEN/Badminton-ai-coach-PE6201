@@ -11,7 +11,7 @@ abstention) are recorded separately so the manual outcome labels remain human.
 from pathlib import Path
 import csv
 import json
-from app.pipeline import BadmintonCoach
+from APP.pipeline import BadmintonCoach
 
 ROOT = Path(__file__).resolve().parents[1]
 path = ROOT / "evals" / "advice_eval.csv"
@@ -44,7 +44,6 @@ for i, row in enumerate(rows, 1):
 
     drill = str(advice.get("drill", "")) if isinstance(advice, dict) else ""
     row["abstained_0_1"] = str(int("notes do not say" in drill.lower()))
-    # Reset marker note on a fresh model run. The human can write it afterwards.
     row["marker_notes"] = ""
 
     print(
