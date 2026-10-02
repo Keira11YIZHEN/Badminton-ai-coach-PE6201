@@ -59,7 +59,7 @@ data/         75 labelled questions, 20 notes and split manifest
 evals/        reproducible classifier eval + fixed 10-case advice eval
 results/      measured outputs and provenance/audit trail
 notebooks/    original evidence + revised final-run notebooks
-docs/         report, product documentation, video plan and feedback mapping
+docs/         report, product documentation, video plan and requirements alignment
 api.py        optional FastAPI HTTP wrapper
 demo.py       command-line end-to-end demo
 requirements.txt
@@ -163,7 +163,7 @@ LLM-backed advice evaluation:
 python -m evals.eval_advice
 ```
 
-The final ten outputs are hand-marked on the instructor-requested dimensions:
+The final ten outputs are hand-marked on three project-defined advice-quality dimensions:
 
 1. **Specific** — is the drill concrete and actionable?
 2. **Supported** — are the advice and factual claims supported by retrieved notes?
