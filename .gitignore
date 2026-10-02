@@ -1,0 +1,23 @@
+# Python cache / virtual environments
+__pycache__/
+*.py[cod]
+*.pyo
+.venv/
+venv/
+
+# Secrets and local environment files
+.env
+.env.*
+*.key
+*.pem
+secrets.*
+
+# IDE / OS files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Local logs / temporary files
+*.log
+*.tmp
