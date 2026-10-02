@@ -52,16 +52,18 @@ Interpretation: the grounding guardrail prevented unsupported invention in all t
 ## Repository map
 
 ```text
-app/          core classifier, retrieval, advisor and pipeline modules
-data/         75 labelled questions, 20 notes and split manifest
+APP/          core classifier, retrieval, advisor and pipeline modules
+DATA/         75 labelled questions, 20 notes and split manifest
 evals/        reproducible classifier eval + fixed 10-case advice eval
 results/      measured outputs and provenance/audit trail
-notebooks/    original evidence + revised final-run notebooks
-docs/         report, product documentation, video plan and requirements alignment
-api.py        optional FastAPI HTTP wrapper
+notebooks/    revised experiment notebooks + final API run
+docs/         architecture, product documentation, context and requirements alignment
+backend_api.py optional FastAPI HTTP wrapper
 demo.py       command-line end-to-end demo
 requirements.txt
 ```
+
+The written report and demonstration video are submitted separately from this repository.
 
 ## Quick start
 
@@ -123,12 +125,12 @@ $env:OPENROUTER_API_KEY='your-key-here'
 python demo.py
 ```
 
-If no environment variable is present, `demo.py` will request the key through a hidden terminal input.
+If no environment variable is present, `demo.py` will request the key through hidden terminal input.
 
 ### 4. Optional: run as an HTTP backend
 
 ```bash
-uvicorn api:app --reload
+uvicorn backend_api:app --reload
 ```
 
 Health check:
@@ -188,11 +190,11 @@ Every headline number is tagged as either **reproduced** or **preserved from an 
 
 - `results/metric_provenance.csv`
 - `results/README.md`
-- `notebooks/original/`
-- `notebooks/revised/PE6201_Final_API_Run_v3_NoSecret.ipynb`
+- `notebooks/`
+- `notebooks/PE6201_Final_API_Run_v3_NoSecret.ipynb`
 
 ## Security
 
 - No API key is committed in this repository.
-- `.env`, `*.key`, and common secret files are ignored by `.gitignore`.
+- `.env`, `*.key`, Python caches and common secret files are ignored by `.gitignore`.
 - If a key is ever exposed in a screenshot or commit, revoke it and create a new one.
