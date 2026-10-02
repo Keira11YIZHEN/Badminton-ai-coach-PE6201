@@ -1,0 +1,358 @@
+# A1 · Part 1 — Choose the right tool.  Starter notebook.
+# PE6201 · Emerging AI Technologies. Run top to bottom, then replace the placeholder domain.
+# A1 · Part 1 — Choose the right tool  *(starter)*
+
+**What Part 1 asks of you.** Take a classification task in **your** domain — sorting things
+into two or more categories. Build it **twice**: once as a **scikit-learn classifier** trained on
+labelled examples, once as a **foundation-model API call** with a prompt and no training at all.
+Measure both on **accuracy, cost, latency, and effort**. Then answer the question that matters:
+*which would you actually deploy — and at what scale would your answer change?*
+
+**What this notebook is.** The whole comparison, already working, on a **placeholder domain**
+(houseplant care messages). Everything you must change is marked
+**`### REPLACE ME`**. Nothing else needs editing.
+
+**The placeholder domain is not a suggestion.** Do not submit houseplants. Replace it with the
+domain you know — see the brief on picking one.
+
+**Cost.** Roughly 60 short API calls ≈ well under one US cent on the default model. We count the
+tokens at the end anyway, because *cost* is one of the four things you are measuring.
+
+**Deliverable from this notebook:** this notebook (run, with output visible), a comparison table,
+and roughly 400 words.
+
+> **If a cell does not work.** This notebook was written before you ran it, against library
+> versions, model names and provider behaviour that change without notice — so treat it as a
+> working draft, not gospel. **Read the error, then try to fix it yourself:** debugging is part of
+> the work, not a detour from it. Then **report it** — in class or by email — with the cell, the
+> full error text, and what you tried, so the shared copy gets fixed and nobody behind you loses
+> the same hour. Reporting a problem costs you nothing. The one thing not to do is quietly work
+> around a broken cell: if your fix changes what the notebook measures, say so in your writeup.
+## Final-project revision after instructor feedback
+
+- Dataset is explicitly reported as **75 total = 48 train + 27 held-out test**, with 9 test items per category.
+- The **majority-class baseline (33.3%)** is treated as a measured baseline, not merely named.
+- The held-out set is not independent in author style: all 75 questions were written by the same author, which limits generalisation claims.
+
+### Setup
+%pip -q install openai scikit-learn
+### Connect to OpenRouter
+Same route as the Class 1, 2 and 3 notebooks. Your key was issued to you individually.
+**Never type a key into a code cell** — this reads it from a Colab secret, an environment
+variable, or a hidden prompt.
+import os, getpass, time, json
+from openai import OpenAI
+
+def _get_openrouter_key():
+    k = os.environ.get('MY_PRIVATE_OPENROUTER_KEY') or os.environ.get('OPENROUTER_API_KEY')
+    if k: return k
+    try:
+        from google.colab import userdata
+        k = userdata.get('OPENROUTER_API_KEY')
+        if k: return k
+    except Exception:
+        pass
+    return getpass.getpass('Paste your OpenRouter API key (hidden): ')
+
+API_KEY = _get_openrouter_key()
+client  = OpenAI(base_url='https://openrouter.ai/api/v1', api_key=API_KEY)
+
+# TRY THIS (knob): any model your key can reach. Cheaper models are a fair comparison too —
+# part of your argument may be that a small model is good enough.
+#   'openai/gpt-4o-mini' (default)  ·  'anthropic/claude-3.5-haiku'
+#   'qwen/qwen-2.5-7b-instruct'     ·  'deepseek/deepseek-chat'
+GEN_MODEL = 'openai/gpt-4o-mini'
+
+TOKENS = {'in': 0, 'out': 0}
+
+def generate(prompt: str, system: str = None, max_new_tokens: int = 40,
+             temperature: float = 0.0) -> str:
+    """temperature 0 = deterministic. Essential when comparing two approaches:
+       otherwise you cannot tell a real difference from random variation."""
+    msgs = ([{'role': 'system', 'content': system}] if system else []) + \
+           [{'role': 'user', 'content': prompt}]
+    r = client.chat.completions.create(model=GEN_MODEL, messages=msgs,
+                                       temperature=temperature, max_tokens=max_new_tokens)
+    if getattr(r, 'usage', None):
+        TOKENS['in']  += r.usage.prompt_tokens
+        TOKENS['out'] += r.usage.completion_tokens
+    return r.choices[0].message.content.strip()
+
+print('connected · model:', GEN_MODEL, '·', generate('Reply with exactly the word: ready'))
+### Check your remaining credit  —  free, this call is not billed
+Your allocation is **fixed and will not be topped up**, so watch it rather than discovering it at
+the end. `usage` is what you have spent; `limit` is your cap; the difference is what is left.
+Run this at the start of a working session and again at the end.
+import urllib.request, json as _json
+
+def credit_check():
+    """Ask OpenRouter what is left on your key. Costs nothing."""
+    try:
+        req = urllib.request.Request('https://openrouter.ai/api/v1/key',
+                                     headers={'Authorization': f'Bearer {API_KEY}'})
+        d = _json.load(urllib.request.urlopen(req, timeout=20))['data']
+        used, cap = d.get('usage'), d.get('limit')
+        if cap is None:
+            print(f'spent so far: ${used:.4f}   (no cap set on this key)')
+        else:
+            print(f'spent ${used:.4f} of ${cap:.2f}  ->  ${cap - used:.4f} remaining')
+        rl = d.get('rate_limit') or {}
+        if rl:
+            print(f"rate limit: {rl.get('requests')} requests per {rl.get('interval')}")
+    except Exception as e:
+        print('could not check credit (not a problem, carry on):', str(e)[:120])
+
+credit_check()
+---
+## 0 · Six words you need — *start here if you don't code*
+
+You do not have to write much Python to finish this. Read the plain-English parts, swap the data,
+run the cells, and watch four numbers.
+
+| Word | In plain words |
+|---|---|
+| **Classification** | Sorting each item into one of a fixed set of categories. "Which of these three buckets does this belong in?" |
+| **Label** | The correct category for one example. Supplied by a human — you. |
+| **Training** | Showing a program many labelled examples until it can guess the label for a new one. |
+| **Accuracy** | Of the items we tested, the fraction the system got right. One number, 0 to 1. |
+| **Latency** | How long one prediction takes. Measured here in milliseconds per item. |
+| **Baseline** | The score you would get by doing something stupid but cheap (e.g. always guessing the most common label). A result that cannot beat its baseline is not a result. |
+
+**The point of Part 1 is not that one approach wins.** It is that you can say *which*, *on what
+evidence*, and *at what scale your answer flips*.
+---
+## 1 · Your data  ### REPLACE ME
+
+You need labelled examples: a short piece of text, and its correct category.
+
+**How many?** 60–120 is plenty. Fewer than ~40 and the accuracy figures are too noisy to compare.
+
+**How many categories?** Two or three. More than four and you will spend all your time labelling.
+
+**Where from?** Write them yourself from memory of your domain, export them from something you
+already have, or collect them by hand. **Do not have an AI assistant invent your dataset** — the
+point is that you can tell a right answer from a wrong one, which requires the data to be real to
+you. (If you must generate examples, say so in your writeup and explain what that costs you.)
+
+**Balance them.** If 90% of your examples are one category, a system that always guesses that
+category scores 90% while knowing nothing. Keep the categories roughly even, and always compare
+against the majority-class baseline printed below.
+### REPLACE ME — your categories. Two or three, named the way your domain names them.
+LABELS = ['technique', 'footwork', 'equipment']
+
+### REPLACE ME — your labelled examples: (text, label).
+# The placeholder below is houseplant-care messages. Yours will be triage notes, support tickets,
+# match reports, recipe steps, lyrics, job ads — whatever your domain actually produces.
+DATA = [
+    ("My forearms are always really sore after playing badminton.", 'technique'),
+    ("When hitting the ball, it will hit the rim.", 'technique'),
+    ("Why can't I suppress the smash", 'technique'),
+    ("Why can't I hit my forehand high clear", 'technique'),
+    ("The ball always goes out of bounds when hit to the right rear.", 'technique'),
+    ("Besides lob shots, how else can you hit a shot at the net?", 'technique'),
+    ("The drop shot either went too high or hit the net.", 'technique'),
+    ("How to correct a tight grip and stiff arm when playing", 'technique'),
+    ("How to practice switching to a backhand grip after hitting a forehand?", 'technique'),
+    ("Backhand hitting technique practice", 'technique'),
+    ("my forehand clear cannot travel far even with big swings", 'technique'),
+    ("My backhand serve often goes into the net.", 'technique'),
+    ("My net play is terrible, making me easy for my opponent to attack.", 'technique'),
+    ("My defensive lob is too short, making it easy for the opponent to spike it.", 'technique'),
+    ("I often push the ball too far at the net, causing it to go out of bounds.", 'technique'),
+    ("What can I do if my footwork can never catch up with the shuttle as a beginner?", 'footwork'),
+    ("I keep failing to do the split‑step in badminton. Are there any drills I can practice?", 'footwork'),
+    ("Why do I often lose my balance after hitting the shuttle and have poor weight transfer?", 'footwork'),
+    ("I tend to overshoot and cannot stop when lunging to the net. How can I fix this?", 'footwork'),
+    ("My backcourt footwork is too slow and I can barely reach the shuttle. How should I train?", 'footwork'),
+    ("I drag my feet and cannot take wide steps when moving sideways. What is the cause?", 'footwork'),
+    ("I always forget to return to the center base after one shot. How do I build this habit?", 'footwork'),
+    ("What is the difference between a hop step and a split‑step, and when should I use each?", 'footwork'),
+    ("My feet drag on the court and I take too many tiny shuffling steps. How to correct it?", 'footwork'),
+    ("My movement is always a split second late when defending drop shots. What tips can help?", 'footwork'),
+    ("When should I use side steps versus cross‑steps? I often pick the wrong one.", 'footwork'),
+    ("I stay too upright and run on my toes. How do I fix my body posture for footwork?", 'footwork'),
+    ("I struggle to get back to the net quickly from the rear court. What footwork pattern should I use?", 'footwork'),
+    ("My ready stance is stiff and I do not know how to adjust my position flexibly.", 'footwork'),
+    ("It is hard for me to speed up again right after an emergency stop. What footwork mistake am I making?", 'footwork'),
+    ("How should beginners choose a suitable badminton racket and what key parameters should I check?", 'equipment'),
+    ("What string tension is good for new players? What problems will high tension cause?", 'equipment'),
+    ("What is the difference between badminton shoes and regular sneakers? Can I play in running shoes?", 'equipment'),
+    ("How often should I replace my grip? What can I do when my grip gets slippery?", 'equipment'),
+    ("The racket handle feels too thick or too thin. How can I adjust it?", 'equipment'),
+    ("How can I tell if a badminton shuttlecock is genuine? Is there a big difference between different‑priced shuttles?", 'equipment'),
+    ("Do beginners need to buy an expensive professional racket right away?", 'equipment'),
+    ("When should I wear wrist or knee supports? Will protective gear limit my movements?", 'equipment'),
+    ("Do I have to cut out the whole string once it breaks? Can I repair just part of it?", 'equipment'),
+    ("How do I tell apart offensive and defensive rackets. Which one suits beginners better?", 'equipment'),
+    ("Is a grip the same as an overgrip? Should I pick thin or thick grips?", 'equipment'),
+    ("My feet keep slipping on the court. Is it caused by my shoes or the court surface?", 'equipment'),
+    ("Heavy rackets are hard to swing while light ones lack power. How do I pick the right racket weight?", 'equipment'),
+    ("Do I have to use a dedicated badminton bag or can I carry rackets in an ordinary backpack?", 'equipment'),
+    ("Shuttlecocks break feathers easily in cold weather. Are there any more durable shuttlecocks?", 'equipment'),
+    ("How can I fix my wrist flick on the forehand clear?", "technique"),
+    ("What is the correct arm movement for a powerful smash?", "technique"),
+    ("Why does my backhand drop shot always land too high?", "technique"),
+    ("How should I rotate my shoulders when hitting overhead shots?", "technique"),
+    ("What mistakes do beginners usually make with grip pressure?", "technique"),
+    ("How do I perform a reliable net tap at the front court?", "technique"),
+    ("How can I make my cross‑court drive more accurate?", "technique"),
+    ("Why is my serve always going out of the back boundary?", "technique"),
+    ("What is the proper hitting point for a forehand lift?", "technique"),
+    ("How to improve the consistency of my backhand clear?", "technique"),
+    ("What steps should I use to quickly reach wide forehand corners?", "footwork"),
+    ("How do I recover to the centre after moving to the back court?", "footwork"),
+    ("Why do I often lose balance when doing side shuffles?", "footwork"),
+    ("Which foot moves first when I chase a low net ball?", "footwork"),
+    ("How can I shorten my reaction time for diagonal movement?", "footwork"),
+    ("What is the correct split‑step timing before each shot?", "footwork"),
+    ("How to adjust my steps when moving backwards for overhead shots?", "footwork"),
+    ("Why do my feet get tangled during fast lateral movement?", "footwork"),
+    ("What drills help beginners build faster court mobility?", "footwork"),
+    ("How should I position my weight before moving to the front?", "footwork"),
+    ("What weight racket is most suitable for new intermediate players?", "equipment"),
+    ("How tight should my badminton strings be strung for casual training?", "equipment"),
+    ("Are thick‑soled shoes better for quick side‑to‑side movement?", "equipment"),
+    ("What differences between synthetic and natural feather shuttlecocks?", "equipment"),
+    ("Do overgrips help to reduce hand slippage during long matches?", "equipment"),
+    ("Which racket frame material offers more power for beginners?", "equipment"),
+    ("How often should I replace my worn badminton shoe insoles?", "equipment"),
+    ("Is a heavier grip helpful when practising powerful smashes?", "equipment"),
+    ("What protective gear can prevent ankle injuries on slippery courts?", "equipment"),
+    ("How do I choose suitable badminton socks for long training sessions?", "equipment"),
+]
+# The placeholder set is small so it runs fast. YOURS SHOULD BE BIGGER — aim for 60–120.
+
+texts  = [t for t, _ in DATA]
+labels = [l for _, l in DATA]
+from collections import Counter
+counts = Counter(labels)
+majority = counts.most_common(1)[0]
+print(f'{len(DATA)} examples · {dict(counts)}')
+print(f'MAJORITY-CLASS BASELINE: always guess "{majority[0]}" -> '
+      f'{majority[1]/len(DATA):.1%} accuracy. Both approaches must beat this to mean anything.')
+### Split: train vs test
+The classifier learns from the **training** half and is scored on the **test** half it has never
+seen. The API call gets no training at all — but it is scored on **exactly the same test items**,
+which is the only reason the two accuracy numbers can be compared.
+from sklearn.model_selection import train_test_split
+X_train, X_test, y_train, y_test = train_test_split(
+    texts, labels, test_size=0.35, random_state=0, stratify=labels)
+print(f'{len(X_train)} training examples · {len(X_test)} test examples')
+---
+## 2 · Approach A — a trained classifier
+
+**TF-IDF** turns each message into a count of which words it contains, weighted so that common
+words ("the", "it") count for little and distinctive words ("webbing", "soggy") count for a lot.
+**Logistic regression** then learns which words push toward which category. No meaning, no
+understanding — just word statistics. It is decades old, runs on a laptop, and costs nothing per
+prediction.
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.linear_model import LogisticRegression
+from sklearn.pipeline import make_pipeline
+from sklearn.metrics import accuracy_score, classification_report
+
+# TRY THIS (knob): ngram_range=(1,2) also counts word PAIRS ("soft mushy"). Often helps.
+clf = make_pipeline(TfidfVectorizer(ngram_range=(1, 1)), LogisticRegression(max_iter=1000))
+
+t0 = time.perf_counter()
+clf.fit(X_train, y_train)
+train_secs = time.perf_counter() - t0
+
+t0 = time.perf_counter()
+pred_clf = clf.predict(X_test)
+clf_latency_ms = (time.perf_counter() - t0) / len(X_test) * 1000
+
+acc_clf = accuracy_score(y_test, pred_clf)
+print(f'trained in {train_secs:.2f}s · accuracy {acc_clf:.1%} · {clf_latency_ms:.2f} ms per item\n')
+print(classification_report(y_test, pred_clf, zero_division=0))
+---
+## 3 · Approach B — a foundation model, no training
+
+No training data at all. We describe the job in words and hand the model one message at a time.
+
+Two things to notice while you read the prompt. First, we **constrain the output** — "reply with
+one word only, from this list" — because a model asked an open question will happily write a
+paragraph, and a paragraph cannot be scored automatically. Second, the prompt below is
+**deliberately plain**; improving it is one of the knobs at the end.
+### REPLACE ME — describe YOUR task in one sentence. Keep the output constraint exactly as it is.
+SYSTEM = (
+   "Classify badminton beginner‑learner questions into one problem category.\n"
+    f"Reply with exactly one word from this list: {', '.join(LABELS)}.\n"
+    "No explanation, no punctuation, no other words."
+)
+
+def classify_by_api(text: str) -> str:
+    out = generate(f'Message: "{text}"\nCategory:', system=SYSTEM, max_new_tokens=6)
+    out = out.strip().strip('.').lower()
+    return out if out in LABELS else 'UNPARSEABLE'   # count failures, never hide them
+
+t0 = time.perf_counter()
+pred_api = [classify_by_api(t) for t in X_test]
+api_latency_ms = (time.perf_counter() - t0) / len(X_test) * 1000
+
+acc_api = accuracy_score(y_test, pred_api)
+bad = sum(1 for p in pred_api if p == 'UNPARSEABLE')
+print(f'accuracy {acc_api:.1%} · {api_latency_ms:.0f} ms per item · {bad} unparseable replies\n')
+print(classification_report(y_test, pred_api, zero_division=0))
+### Look at the disagreements
+Where the two approaches differ is where your writeup lives. Read these before you write a word.
+print(f'{"TRUE":<12}{"CLASSIFIER":<12}{"API":<12}TEXT')
+for txt, truth, a, b in zip(X_test, y_test, pred_clf, pred_api):
+    if a != b:
+        print(f'{truth:<12}{a:<12}{b:<12}{txt[:60]}')
+---
+## 4 · The four measurements
+
+**Cost** is where most submissions go vague. The classifier costs nothing per prediction but costs
+*you* the labelling time. The API costs a fraction of a cent per prediction and costs you almost
+no setup. Which is cheaper depends entirely on **how many items you will ever classify** — which
+is exactly the scale question the brief asks you.
+### REPLACE ME — check today's price for YOUR model on openrouter.ai/models. These change.
+PRICE_IN_PER_M  = 0.1233    # US$ per 1,000,000 input tokens
+PRICE_OUT_PER_M = 0.5958    # US$ per 1,000,000 output tokens
+
+api_cost = TOKENS['in']/1e6*PRICE_IN_PER_M + TOKENS['out']/1e6*PRICE_OUT_PER_M
+per_item = api_cost / max(1, len(X_test))
+
+### REPLACE ME — your honest effort estimate, in hours. Be truthful; it is part of the argument.
+EFFORT = {'classifier': 'labelling 75 examples ≈1.5 h, then ~0 to run',
+          'api':       'writing and tuning system prompt ≈0.3 h, no labelling'}
+
+print(f'{"":<14}{"ACCURACY":>10}{"COST / ITEM":>16}{"LATENCY":>12}   EFFORT')
+print(f'{"baseline":<14}{majority[1]/len(DATA):>9.1%}{"$0":>16}{"~0 ms":>12}   none')
+print(f'{"classifier":<14}{acc_clf:>9.1%}{"$0.00 (local)":>16}{clf_latency_ms:>9.2f} ms   {EFFORT["classifier"]}')
+print(f'{"API":<14}{acc_api:>9.1%}{"$"+format(per_item,".6f"):>16}{api_latency_ms:>9.0f} ms   {EFFORT["api"]}')
+print(f'\ntokens: {TOKENS["in"]} in / {TOKENS["out"]} out · this run cost about ${api_cost:.4f}')
+
+for n in (1_000, 100_000, 10_000_000):
+    print(f'  at {n:>10,} items/year -> API ≈ ${per_item*n:,.2f}   classifier ≈ $0 in API spend')
+**Read that last block carefully.** At a thousand items a year the API is free in practice and the
+labelling effort is the only real cost. At ten million, the arithmetic reverses and someone starts
+asking why you are renting a frontier model to do a job TF-IDF does. *Where is your crossover, and
+what would have to be true for you to change your mind?* That is your 400 words.
+---
+## 5 · YOUR TURN
+
+1. Replace `LABELS`, `DATA`, and `SYSTEM` with your domain. Re-run from the top.
+2. Check both approaches beat the majority-class baseline. If neither does, your categories are
+   probably overlapping — fix the categories, not the code.
+3. Read the disagreements. Pick **two** and work out *why* each approach got it wrong.
+4. Fill in `PRICE_*` from today's OpenRouter pricing and `EFFORT` from your own honest reckoning.
+5. Write the comparison table and ~400 words.
+
+**Knobs worth trying** (each one is a sentence in your writeup if you report what moved):
+
+- `ngram_range=(1,2)` on the vectoriser.
+- Halve the training set: `test_size=0.65`. How much accuracy does the classifier lose? The API
+  loses none — it never trained. **That gap is the real argument for the API.**
+- Add two worked examples to `SYSTEM` (few-shot, Class 3 rung 2) and re-measure. Note that this
+  raises your input tokens on *every* call, forever.
+- Swap `GEN_MODEL` for a cheaper model. If accuracy holds, that is a finding.
+
+### What your ~400 words must contain
+
+- The comparison table: accuracy, cost, latency, effort, for both.
+- Which you would deploy, and **why** — naming the trade-off you accepted.
+- **The scale at which your answer changes**, with the arithmetic.
+- One thing you could not measure here, and what it would take to measure it.
+# Scratch space for your own experiments.
