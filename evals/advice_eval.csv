@@ -1,0 +1,11 @@
+case_id,input,expected_category,required_evidence,expected_advice,model_category,retrieved_note_ids,model_advice,specific_0_1,supported_0_1,no_invention_0_1,marker_notes
+A01,My grip is so tight that my wrist becomes stiff and my shots feel hard to control.,technique,doc0,relax grip pressure; avoid squeezing too tightly,,,,,,,
+A02,I react late because I only move after my opponent has already hit the shuttle.,footwork,doc2,perform the split step just before opponent contact,,,,,,,
+A03,My forehand clear lacks distance even though I swing hard with my arm.,technique,doc3,use full shoulder rotation and contact high in front,,,,,,,
+A04,I am a beginner and my racket makes my arm tired quickly. What weight should I look for?,equipment,doc4,recommend 85-90 g for new players,,,,,,,
+A05,High string tension makes my wrist sore. What beginner setting should I use?,equipment,doc5,recommend 20-22 lbs and explain high-tension trade-off,,,,,,,
+A06,Can I use my running shoes for badminton even though I slide during side movements?,equipment,doc6,use badminton shoes with lateral support and gum rubber soles,,,,,,,
+A07,My net shot keeps touching the tape because I push too hard. What should I change?,technique,doc7,reduce wrist power; contact higher; brush cork gently,,,,,,,
+A08,I am slow reaching the forehand rear corner and often run backwards.,footwork,doc8,"cross-over step first, then side steps; do not run backwards facing net",,,,,,,
+A09,After every shot I stay where I hit it and then cannot cover the next reply.,footwork,doc9,return to centre/T-junction after each shot,,,,,,,
+A10,I want a simple drill to improve court movement speed without losing rhythm.,footwork,doc19,"shadow footwork for 15 minutes, prioritising rhythm before max speed",,,,,,,
