@@ -1,0 +1,19 @@
+metric,value,status,source,notes
+majority_baseline_accuracy,33.3%,reproduced,evals/eval_classifier.py,Same 27-item held-out population
+local_tfidf_accuracy,70.4% (19/27),reproduced,evals/eval_classifier.py,Matches saved A1 result
+local_tfidf_latency_saved,0.08 ms/item,preserved original measurement,notebooks/original/A1_Part1_original.ipynb,Hardware/runtime dependent; current reruns may differ
+llm_classifier_accuracy,100.0% (27/27),preserved original measurement,notebooks/original/A1_Part1_original.ipynb,Same held-out population
+llm_classifier_latency_saved,789 ms/item,preserved original measurement,notebooks/original/A1_Part1_original.ipynb,Network/provider dependent
+llm_classifier_cost_saved,US$0.000081/query,preserved original estimate,notebooks/original/A1_Part1_original.ipynb,Uses pricing recorded in original experiment
+rag_target_questions,5/5,preserved original measurement,notebooks/original/A1_Part2_original.ipynb,Five targeted knowledge questions
+prompt_eval_v1_l1,100%,preserved original measurement,notebooks/original/A1_Part3_original.ipynb,Structural pass rate
+prompt_eval_v1_l2,70%,preserved original measurement,notebooks/original/A1_Part3_original.ipynb,Semantic pass rate
+prompt_eval_v2_l1,100%,preserved original measurement,notebooks/original/A1_Part3_original.ipynb,JSON-only prompt change
+prompt_eval_v2_l2,70%,preserved original measurement,notebooks/original/A1_Part3_original.ipynb,No semantic improvement
+advice_specificity,60% (6/10),final measured + human mark,results/advice_eval_final.csv,Instructor-requested hand mark
+advice_supported,60% (6/10),final measured + human mark,results/advice_eval_final.csv,Instructor-requested hand mark
+advice_no_invention,100% (10/10),final measured + human mark,results/advice_eval_final.csv,Instructor-requested hand mark
+advice_route_correct,70% (7/10),final measured,results/final_eval_summary.json,Automatic diagnostic
+advice_evidence_recall_at_3,70% (7/10),final measured,results/final_eval_summary.json,Automatic diagnostic
+advice_abstentions,40% (4/10),final measured,results/final_eval_summary.json,Automatic diagnostic
+advice_token_use,2338 input / 570 output,final measured,results/final_eval_summary.json,OpenRouter final run

@@ -1,0 +1,29 @@
+{
+  "source": "PE6201_A1_Part2_Starter.ipynb saved outputs",
+  "documents": 20,
+  "chunk_words": 45,
+  "overlap": 12,
+  "retrieval": "sentence-transformers/all-MiniLM-L6-v2",
+  "top_k": 3,
+  "five_answerable_questions_correct": 5,
+  "failure": {
+    "query": "What causes wrist soreness for beginner badminton players?",
+    "system_answer": "The notes do not say.",
+    "correct_note": "doc5",
+    "retrieved": [
+      {
+        "id": "doc0",
+        "score": 0.686
+      },
+      {
+        "id": "doc17",
+        "score": 0.525
+      },
+      {
+        "id": "doc1",
+        "score": 0.471
+      }
+    ],
+    "diagnosis": "semantic retrieval-ranking noise / distractor failure"
+  }
+}

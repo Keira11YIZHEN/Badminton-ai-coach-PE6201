@@ -1,0 +1,22 @@
+{
+  "source": "PE6201_A1_Part1_Starter.ipynb saved outputs",
+  "dataset_total": 75,
+  "train_count": 48,
+  "test_count": 27,
+  "test_per_class": {
+    "technique": 9,
+    "footwork": 9,
+    "equipment": 9
+  },
+  "majority_baseline_accuracy": 0.333,
+  "tfidf_accuracy": 0.704,
+  "tfidf_latency_ms_per_item": 0.08,
+  "gpt4o_mini_accuracy": 1.0,
+  "gpt4o_mini_latency_ms_per_item": 789,
+  "gpt4o_mini_unparseable": 0,
+  "api_cost_per_item_usd_saved_run": 8.1e-05,
+  "saved_run_tokens_in": 15496,
+  "saved_run_tokens_out": 464,
+  "saved_run_estimated_cost_usd": 0.0022,
+  "note": "API figures are preserved measurements from the submitted A1 notebook, not re-generated values."
+}

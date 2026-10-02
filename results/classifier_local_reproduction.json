@@ -1,0 +1,47 @@
+{
+  "n_total": 75,
+  "n_train": 48,
+  "n_test": 27,
+  "test_support": {
+    "equipment": 9,
+    "footwork": 9,
+    "technique": 9
+  },
+  "majority_label": "equipment",
+  "majority_accuracy": 0.3333333333333333,
+  "tfidf_accuracy": 0.7037037037037037,
+  "tfidf_latency_ms_per_item": 0.020834407407661543,
+  "classification_report": {
+    "equipment": {
+      "precision": 0.8333333333333334,
+      "recall": 0.5555555555555556,
+      "f1-score": 0.6666666666666666,
+      "support": 9.0
+    },
+    "footwork": {
+      "precision": 0.5833333333333334,
+      "recall": 0.7777777777777778,
+      "f1-score": 0.6666666666666666,
+      "support": 9.0
+    },
+    "technique": {
+      "precision": 0.7777777777777778,
+      "recall": 0.7777777777777778,
+      "f1-score": 0.7777777777777778,
+      "support": 9.0
+    },
+    "accuracy": 0.7037037037037037,
+    "macro avg": {
+      "precision": 0.7314814814814815,
+      "recall": 0.7037037037037037,
+      "f1-score": 0.7037037037037037,
+      "support": 27.0
+    },
+    "weighted avg": {
+      "precision": 0.7314814814814815,
+      "recall": 0.7037037037037037,
+      "f1-score": 0.7037037037037037,
+      "support": 27.0
+    }
+  }
+}

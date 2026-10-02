@@ -1,0 +1,10 @@
+{
+  "route_correct": 7,
+  "evidence_hits_at_3": 7,
+  "abstentions": 4,
+  "prompt_tokens": 2338,
+  "completion_tokens": 570,
+  "specific_passes": 6,
+  "supported_passes": 6,
+  "no_invention_passes": 10
+}
